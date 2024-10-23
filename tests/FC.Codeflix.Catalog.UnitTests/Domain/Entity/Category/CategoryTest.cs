@@ -31,7 +31,6 @@ public class CategoryTest
         (category.IsActive).Should().BeTrue();
     }
 
-
     [Theory(DisplayName = nameof(InstantiateWithIsActive))]
     [Trait("Domain", "Category - Aggregates")]
     [InlineData(true)]
