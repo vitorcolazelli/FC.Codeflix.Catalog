@@ -17,7 +17,6 @@ public class CreateCategory : ICreateCategory
         _categoryRepository = categoryRepository;
     }
 
-
     public async Task<CreateCategoryOutput> Handle(CreateCategoryInput input, CancellationToken cancellationToken)
     {
         var category = new DomainEntity.Category(
