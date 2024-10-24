@@ -28,11 +28,6 @@ public class CreateCategory : ICreateCategory
 
         await _unitOfWork.Commit(cancellationToken);
 
-        return new CreateCategoryOutput(
-            category.Id,
-            category.Name,
-            category.Description,
-            category.IsActive,
-            category.CreatedAt);
+        return CreateCategoryOutput.FromCategory(category);
     }
 }
