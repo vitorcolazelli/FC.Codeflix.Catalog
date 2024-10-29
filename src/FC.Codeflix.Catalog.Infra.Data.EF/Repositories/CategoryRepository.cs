@@ -1,3 +1,4 @@
+using FC.Codeflix.Catalog.Application.Exceptions;
 using FC.Codeflix.Catalog.Domain.Entity;
 using FC.Codeflix.Catalog.Domain.Repository;
 using FC.Codeflix.Catalog.Domain.SeedWork.SearchableRepository;
@@ -16,9 +17,12 @@ public class CategoryRepository : ICategoryRepository
     public async Task Insert(Category aggregate, CancellationToken cancellationToken) =>
         await Categories.AddAsync(aggregate, cancellationToken);
 
-    public Task<Category> Get(Guid id, CancellationToken cancellationToken)
+    public async Task<Category> Get(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var category = await Categories.FindAsync(new object[] { id }, cancellationToken);
+
+        NotFoundException.ThrowIfNull(category, $"Category '{id}' not found.");
+        return category!;
     }
 
     public Task Delete(Category aggregate, CancellationToken cancellationToken)
