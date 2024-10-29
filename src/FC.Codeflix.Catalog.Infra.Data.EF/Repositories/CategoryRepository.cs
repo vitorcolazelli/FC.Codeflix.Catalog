@@ -25,19 +25,25 @@ public class CategoryRepository : ICategoryRepository
         return category!;
     }
 
-    public Task Delete(Category aggregate, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    public Task Delete(Category aggregate, CancellationToken cancellationToken) =>
+        Task.FromResult(_context.Remove(aggregate));
 
-    public Task Update(Category aggregate, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    public Task Update(Category aggregate, CancellationToken cancellationToken) =>
+        Task.FromResult(_context.Update(aggregate));
     
-    public Task<SearchOutput<Category>> Search(SearchInput input, CancellationToken cancellationToken)
+    public async Task<SearchOutput<Category>> Search(SearchInput input, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var toSkip = (input.Page - 1) * input.PerPage;
+        
+        var total = await Categories.CountAsync(cancellationToken);
+        
+        var items = await Categories
+            .AsNoTracking()
+            .Skip(toSkip)
+            .Take(input.PerPage)
+            .ToListAsync(cancellationToken);
+
+        return new SearchOutput<Category>(input.Page, input.PerPage, total, items);
     }
     
     public Task<IReadOnlyList<Guid>> GetIdsListByIds(List<Guid> ids, CancellationToken cancellationToken)
