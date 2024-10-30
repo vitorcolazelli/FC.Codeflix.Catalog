@@ -31,28 +31,57 @@ public class CategoryRepository : ICategoryRepository
     public Task Update(Category aggregate, CancellationToken cancellationToken) =>
         Task.FromResult(_context.Update(aggregate));
     
-    public async Task<SearchOutput<Category>> Search(SearchInput input, CancellationToken cancellationToken)
+    public async Task<SearchOutput<Category>> Search(
+        SearchInput input, 
+        CancellationToken cancellationToken)
     {
         var toSkip = (input.Page - 1) * input.PerPage;
         
-        var total = await Categories.CountAsync(cancellationToken);
+        var query = Categories.AsNoTracking();
+        query = AddOrderToQuery(query, input.OrderBy, input.Order);
         
-        var items = await Categories
-            .AsNoTracking()
+        if(!string.IsNullOrWhiteSpace(input.Search))
+            query = query.Where(x => x.Name.Contains(input.Search));
+        
+        var total = await query.CountAsync(cancellationToken);
+        
+        var items = await query
             .Skip(toSkip)
             .Take(input.PerPage)
             .ToListAsync(cancellationToken);
-
+        
         return new SearchOutput<Category>(input.Page, input.PerPage, total, items);
     }
-    
-    public Task<IReadOnlyList<Guid>> GetIdsListByIds(List<Guid> ids, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
+
+    private static IQueryable<Category> AddOrderToQuery(
+        IQueryable<Category> query,
+        string orderProperty,
+        SearchOrder order)
+    { 
+        var orderedQuery = (orderProperty.ToLower(), order) switch
+        {
+            ("name", SearchOrder.Asc) => query.OrderBy(x => x.Name)
+                .ThenBy(x => x.Id),
+            ("name", SearchOrder.Desc) => query.OrderByDescending(x => x.Name)
+                .ThenByDescending(x => x.Id),
+            ("id", SearchOrder.Asc) => query.OrderBy(x => x.Id),
+            ("id", SearchOrder.Desc) => query.OrderByDescending(x => x.Id),
+            ("createdat", SearchOrder.Asc) => query.OrderBy(x => x.CreatedAt),
+            ("createdat", SearchOrder.Desc) => query.OrderByDescending(x => x.CreatedAt),
+            _ => query.OrderBy(x => x.Name)
+                .ThenBy(x => x.Id)
+        };
+        
+        return orderedQuery;
     }
 
-    public Task<IReadOnlyList<Category>> GetListByIds(List<Guid> ids, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IReadOnlyList<Guid>> GetIdsListByIds(List<Guid> ids, CancellationToken cancellationToken) => 
+        await Categories.AsNoTracking()
+            .Where(category => ids.Contains(category.Id))
+            .Select(category => category.Id).ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<Category>> GetListByIds(List<Guid> ids, CancellationToken cancellationToken) => 
+        await Categories.AsNoTracking()
+            .Where(category => ids.Contains(category.Id))
+            .ToListAsync(cancellationToken);
 }
