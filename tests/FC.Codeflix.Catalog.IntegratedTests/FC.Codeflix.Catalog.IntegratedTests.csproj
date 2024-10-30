@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FC.Codeflix.Catalog.Domain\FC.Codeflix.Catalog.Domain.csproj" />
     <ProjectReference Include="..\..\src\FC.Codeflix.Catalog.Infra.Data.EF\FC.Codeflix.Catalog.Infra.Data.EF.csproj" />
+    <ProjectReference Include="..\FC.Codeflix.Catalog.UnitTests\FC.Codeflix.Catalog.UnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
