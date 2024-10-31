@@ -1,16 +1,15 @@
+using FC.Codeflix.Catalog.Api.Configurations;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddAppConnections()
+    .AddUseCases()
+    .AddAndConfigureControllers();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseDocumentation();
 
 app.UseHttpsRedirection();
 
