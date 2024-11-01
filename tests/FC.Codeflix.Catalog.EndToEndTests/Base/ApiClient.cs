@@ -34,7 +34,12 @@ public class ApiClient
         TOutput? output = null;
         
         if (!string.IsNullOrWhiteSpace(outputString))
-            output = JsonSerializer.Deserialize<TOutput>(outputString);
+            output = JsonSerializer.Deserialize<TOutput>(
+                outputString, 
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
         
         return output;
     }
