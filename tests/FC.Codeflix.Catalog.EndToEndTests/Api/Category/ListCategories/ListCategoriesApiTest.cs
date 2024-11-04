@@ -112,8 +112,7 @@ public class ListCategoriesApiTest
         int expectedQuantityItems
     )
     {
-        var exampleCategoriesList = _fixture
-            .GetExampleCategoriesList(quantityCategoriesToGenerate);
+        var exampleCategoriesList = _fixture.GetExampleCategoriesList(quantityCategoriesToGenerate);
         await _fixture.Persistence.InsertList(exampleCategoriesList);
         var input = new ListCategoriesInput(page, perPage);
 
