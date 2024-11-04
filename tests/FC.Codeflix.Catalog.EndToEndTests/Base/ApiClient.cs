@@ -39,6 +39,33 @@ public class ApiClient
         return (response, output);
     }
     
+    public async Task<(HttpResponseMessage?, TOutput?)> Delete<TOutput>(string route) 
+        where TOutput : class
+    {
+        var response = await _httpClient.DeleteAsync(route);
+        
+        var output = await GetOutput<TOutput>(response);
+        
+        return (response, output);
+    }
+    
+    public async Task<(HttpResponseMessage?, TOutput?)> Put<TOutput>(string route, object payload) 
+        where TOutput : class
+    {
+        var response = await _httpClient.PutAsync(
+            route,
+            new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json"
+            )
+        );
+        
+        var output = await GetOutput<TOutput>(response);
+        
+        return (response, output);
+    }
+    
     private static string PrepareGetRoute(string route, object? queryStringParametersObject)
     {
         if(queryStringParametersObject is null)

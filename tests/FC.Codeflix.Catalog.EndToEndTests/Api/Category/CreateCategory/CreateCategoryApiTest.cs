@@ -9,6 +9,7 @@ namespace FC.Codeflix.Catalog.EndToEndTests.Api.Category.CreateCategory;
 
 [Collection(nameof(CreateCategoryApiTestFixture))]
 public class CreateCategoryApiTest
+    : IDisposable
 {
     private readonly CreateCategoryApiTestFixture _fixture;
     
@@ -56,12 +57,12 @@ public class CreateCategoryApiTest
     public async Task ErrorWhenCantInstantiateAggregate(
         CreateCategoryInput input,
         string expectedDetail
-    ){
-        var (response, output) = await _fixture.
-            ApiClient.Post<ProblemDetails>(
-                "/categories",
-                input
-            );
+    )
+    {
+        var (response, output) = await _fixture.ApiClient.Post<ProblemDetails>(
+            "/categories",
+            input
+        );
 
         response.Should().NotBeNull();
         response!.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
@@ -71,4 +72,7 @@ public class CreateCategoryApiTest
         output.Status.Should().Be(StatusCodes.Status422UnprocessableEntity);
         output.Detail.Should().Be(expectedDetail);
     }
+
+    public void Dispose()
+        => _fixture.CleanPersistence();
 }

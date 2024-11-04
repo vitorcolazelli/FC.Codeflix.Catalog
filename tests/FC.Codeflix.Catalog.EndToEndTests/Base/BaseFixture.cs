@@ -34,4 +34,16 @@ public class BaseFixture
         
         return context;
     }
+    
+    public void CleanPersistence()
+    {
+        var context = CreateDbContext();
+        context.Database.EnsureDeleted();
+        context.Database.EnsureCreated();
+    }
+    
+    public void Dispose()
+    {
+        WebAppFactory.Dispose();
+    }
 }
