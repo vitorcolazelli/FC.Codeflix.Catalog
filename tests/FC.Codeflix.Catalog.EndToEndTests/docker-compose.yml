@@ -1,0 +1,13 @@
+version: '3.6'
+
+services:
+  fc.codeflix.catalog.fb:
+    container_name: catalogdb-e2e
+    hostname: catalogdb-e2e
+    image: mysql
+    volumes:
+      - .docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 33060:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: C0D3fl1X.@
