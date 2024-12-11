@@ -97,7 +97,7 @@ public class GenreRepository : IGenreRepository
             query = query.Where(genre => genre.Name.Contains(input.Search));
 
         var genres = await query
-                .Skip(toSkip).Take(input.PerPage).ToListAsync();
+                .Skip(toSkip).Take(input.PerPage).ToListAsync(cancellationToken: cancellationToken);
 
         var total = await query.CountAsync(cancellationToken: cancellationToken);
 
