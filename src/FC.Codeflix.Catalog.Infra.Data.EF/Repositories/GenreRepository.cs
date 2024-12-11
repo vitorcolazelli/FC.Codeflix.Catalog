@@ -10,8 +10,8 @@ namespace FC.Codeflix.Catalog.Infra.Data.EF.Repositories;
 public class GenreRepository : IGenreRepository
 {
     private readonly CodeflixCatalogDbContext _context;
-    private DbSet<Genre> _genres => _context.Set<Genre>();
-    private DbSet<GenresCategories> _genresCategories => _context.Set<GenresCategories>();
+    private DbSet<Genre> Genres => _context.Set<Genre>();
+    private DbSet<GenresCategories> GenresCategories => _context.Set<GenresCategories>();
 
     public GenreRepository(CodeflixCatalogDbContext context)
         => _context = context;
@@ -20,7 +20,7 @@ public class GenreRepository : IGenreRepository
         Genre genre, 
         CancellationToken cancellationToken) 
     {
-        await _genres.AddAsync(genre, cancellationToken);
+        await Genres.AddAsync(genre, cancellationToken);
         
         if (genre.Categories.Count > 0)
         {
@@ -30,7 +30,7 @@ public class GenreRepository : IGenreRepository
                     genre.Id
                 ));
             
-            await _genresCategories.AddRangeAsync(relations, cancellationToken);
+            await GenresCategories.AddRangeAsync(relations, cancellationToken);
         }
     }
 
@@ -38,18 +38,18 @@ public class GenreRepository : IGenreRepository
         Guid id, 
         CancellationToken cancellationToken)
     {
-        var genre = await _genres
+        var genre = await Genres
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         
         NotFoundException.ThrowIfNull(genre, $"Genre '{id}' not found.");
         
-        var categoryIds = await _genresCategories
-            .Where(x => x.GenreId == genre.Id)
+        var categoryIds = await GenresCategories
+            .Where(x => x.GenreId == genre!.Id)
             .Select(x => x.CategoryId)
             .ToListAsync(cancellationToken);
         
-        categoryIds.ForEach(genre.AddCategory);
+        categoryIds.ForEach(genre!.AddCategory);
         
         return genre;
     }
@@ -58,20 +58,20 @@ public class GenreRepository : IGenreRepository
         Genre aggregate, 
         CancellationToken cancellationToken)
     {
-        _genresCategories.RemoveRange(
-            _genresCategories.Where(x => x.GenreId == aggregate.Id)
+        GenresCategories.RemoveRange(
+            GenresCategories.Where(x => x.GenreId == aggregate.Id)
         );
         
-        _genres.Remove(aggregate);
+        Genres.Remove(aggregate);
         
         return Task.CompletedTask;
     }
 
     public async Task Update(Genre genre, CancellationToken cancellationToken)
     {
-        _genres.Update(genre);
+        Genres.Update(genre);
         
-        _genresCategories.RemoveRange(_genresCategories
+        GenresCategories.RemoveRange(GenresCategories
             .Where(x => x.GenreId == genre.Id));
         
         if (genre.Categories.Count > 0)
@@ -82,14 +82,14 @@ public class GenreRepository : IGenreRepository
                     genre.Id
                 ));
             
-            await _genresCategories.AddRangeAsync(relations, cancellationToken);
+            await GenresCategories.AddRangeAsync(relations, cancellationToken);
         }
     }
 
     public async Task<SearchOutput<Genre>> Search(SearchInput input, CancellationToken cancellationToken)
     {
         var toSkip = (input.Page - 1) * input.PerPage;
-        var query = _genres.AsNoTracking();
+        var query = Genres.AsNoTracking();
 
         query = AddOrderToQuery(query, input.OrderBy, input.Order);
 
@@ -103,7 +103,7 @@ public class GenreRepository : IGenreRepository
 
         var genresIds = genres.Select(genre => genre.Id).ToList();
         
-        var relations = await _genresCategories
+        var relations = await GenresCategories
             .Where(relation => genresIds.Contains(relation.GenreId))
             .ToListAsync(cancellationToken: cancellationToken);
         
@@ -152,7 +152,7 @@ public class GenreRepository : IGenreRepository
     public async Task<IReadOnlyList<Guid>> GetIdsListByIds(
         List<Guid> ids, 
         CancellationToken cancellationToken) 
-        => await _genres.AsNoTracking()
+        => await Genres.AsNoTracking()
         .Where(genre => ids.Contains(genre.Id))
         .Select(genre => genre.Id)
         .ToListAsync(cancellationToken);
@@ -160,7 +160,7 @@ public class GenreRepository : IGenreRepository
     public async Task<IReadOnlyList<Genre>> GetListByIds(
         List<Guid> ids, 
         CancellationToken cancellationToken) 
-        => await _genres.AsNoTracking()
+        => await Genres.AsNoTracking()
         .Where(genre => ids.Contains(genre.Id))
         .ToListAsync(cancellationToken);
 }
