@@ -27,8 +27,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Create(
         [FromBody] CreateCategoryInput input,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         var output = await _mediator.Send(input, cancellationToken);
         return CreatedAtAction(
@@ -45,8 +44,7 @@ public class CategoriesController : ControllerBase
     public async Task<IActionResult> Update(
         [FromBody] UpdateCategoryApiInput apiInput,
         [FromRoute] Guid id,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         var input = new UpdateCategoryInput(
             id,
@@ -63,8 +61,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         var output = await _mediator.Send(new GetCategoryInput(id), cancellationToken);
         return Ok(new ApiResponse<CategoryModelOutput>(output));
@@ -75,8 +72,7 @@ public class CategoriesController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid id,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         await _mediator.Send(new DeleteCategoryInput(id), cancellationToken);
         return NoContent();
