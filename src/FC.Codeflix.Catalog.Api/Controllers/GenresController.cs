@@ -6,7 +6,9 @@ using FC.Codeflix.Catalog.Application.UseCases.Genre.Common;
 using FC.Codeflix.Catalog.Application.UseCases.Genre.CreateGenre;
 using FC.Codeflix.Catalog.Application.UseCases.Genre.DeleteGenre;
 using FC.Codeflix.Catalog.Application.UseCases.Genre.GetGenre;
+using FC.Codeflix.Catalog.Application.UseCases.Genre.ListGenres;
 using FC.Codeflix.Catalog.Application.UseCases.Genre.UpdateGenre;
+using FC.Codeflix.Catalog.Domain.SeedWork.SearchableRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -80,5 +82,33 @@ public class GenresController : ControllerBase
         );
         
         return Ok(new ApiResponse<GenreModelOutput>(output));
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(typeof(ListGenresOutput), StatusCodes.Status200OK)]
+    public async Task<IActionResult> List(
+        CancellationToken cancellationToken,
+        [FromQuery] int? page = null,
+        [FromQuery(Name = "per_page")] int? perPage = null,
+        [FromQuery] string? search = null,
+        [FromQuery] string? sort = null,
+        [FromQuery] SearchOrder? dir = null)
+    {
+        var input = new ListGenresInput();
+        
+        if (page is not null) 
+            input.Page = page.Value;
+        if (perPage is not null) 
+            input.PerPage = perPage.Value;
+        if (!string.IsNullOrWhiteSpace(search)) 
+            input.Search = search;
+        if (!string.IsNullOrWhiteSpace(sort)) 
+            input.Sort = sort;
+        if (dir is not null) 
+            input.Dir = dir.Value;
+
+        var output = await _mediator.Send(input, cancellationToken);
+        
+        return Ok(new ApiResponseList<GenreModelOutput>(output));
     }
 }
