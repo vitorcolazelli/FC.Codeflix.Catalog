@@ -26,6 +26,7 @@ public class Genre : AggregateRoot
         IsActive = true;
         Validate();
     }
+    
     public void Deactivate()
     {
         IsActive = false;
