@@ -17,9 +17,11 @@ public class CodeflixCatalogDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         modelBuilder.ApplyConfiguration(new GenreConfiguration());
         modelBuilder.ApplyConfiguration(new GenresCategoriesConfiguration());
+        modelBuilder.ApplyConfiguration(new CastMemberConfiguration());
     }
     
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Genre> Genres => Set<Genre>();
     public DbSet<GenresCategories> GenresCategories => Set<GenresCategories>();
+    public DbSet<CastMember> CastMembers => Set<CastMember>();
 }
