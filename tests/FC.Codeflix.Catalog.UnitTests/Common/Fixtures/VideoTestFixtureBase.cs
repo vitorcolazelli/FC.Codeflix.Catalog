@@ -1,5 +1,6 @@
+using FC.Codeflix.Catalog.Domain.Enum;
 using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
- 
+
 namespace FC.Codeflix.Catalog.UnitTests.Common.Fixtures;
 
 public abstract class VideoTestFixtureBase : BaseFixture
@@ -10,8 +11,46 @@ public abstract class VideoTestFixtureBase : BaseFixture
         GetValidYearLaunched(),
         GetRandomBoolean(),
         GetRandomBoolean(),
-        GetValidDuration()
+        GetValidDuration(),
+        GetRandomRating()
     );
+
+    public DomainEntity.Video GetValidVideoWithAllProperties()
+    {
+        var video = new DomainEntity.Video(
+            GetValidTitle(),
+            GetValidDescription(),
+            GetValidYearLaunched(),
+            GetRandomBoolean(),
+            GetRandomBoolean(),
+            GetValidDuration(),
+            GetRandomRating()
+        );
+
+        video.UpdateBanner(GetValidImagePath());
+        video.UpdateThumb(GetValidImagePath());
+        video.UpdateThumbHalf(GetValidImagePath());
+
+        video.UpdateMedia(GetValidMediaPath());
+        video.UpdateTrailer(GetValidMediaPath());
+
+        var random = new Random();
+        Enumerable.Range(1, random.Next(2, 5)).ToList()
+            .ForEach(_ => video.AddCastMember(Guid.NewGuid()));
+        Enumerable.Range(1, random.Next(2, 5)).ToList()
+            .ForEach(_ => video.AddCategory(Guid.NewGuid()));
+        Enumerable.Range(1, random.Next(2, 5)).ToList()
+            .ForEach(_ => video.AddGenre(Guid.NewGuid()));
+
+        return video;
+    }
+
+    public Rating GetRandomRating()
+    {
+        var enumValue = Enum.GetValues<Rating>();
+        var random = new Random();
+        return enumValue[random.Next(enumValue.Length)];
+    }
 
     public string GetValidTitle()
         => Faker.Lorem.Letter(100);
@@ -33,4 +72,20 @@ public abstract class VideoTestFixtureBase : BaseFixture
 
     public string GetTooLongTitle()
         => Faker.Lorem.Letter(400);
+
+    public string GetValidImagePath()
+        => Faker.Image.PlaceImgUrl();
+
+    public string GetValidMediaPath()
+    {
+        var exampleMedias = new string[]
+        {
+            "https://www.googlestorage.com/file-example.mp4",
+            "https://www.storage.com/another-example-of-video.mp4",
+            "https://www.S3.com.br/example.mp4",
+            "https://www.glg.io/file.mp4"
+        };
+        var random = new Random();
+        return exampleMedias[random.Next(exampleMedias.Length)];
+    }
 }

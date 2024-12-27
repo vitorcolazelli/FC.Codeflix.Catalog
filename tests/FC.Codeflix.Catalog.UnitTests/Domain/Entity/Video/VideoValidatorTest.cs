@@ -1,7 +1,9 @@
+﻿using System.Linq;
 using FC.Codeflix.Catalog.Domain.Validation;
+using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
 using FC.Codeflix.Catalog.Domain.Validator;
 using FluentAssertions;
-using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
+using Xunit;
 
 namespace FC.Codeflix.Catalog.UnitTests.Domain.Entity.Video;
 
@@ -12,7 +14,7 @@ public class VideoValidatorTest
 
     public VideoValidatorTest(VideoTestFixture fixture)
         => _fixture = fixture;
-    
+
     [Fact(DisplayName = nameof(ReturnsValidWhenVideoIsValid))]
     [Trait("Domain", "Video Validator - Validators")]
     public void ReturnsValidWhenVideoIsValid()
@@ -26,7 +28,7 @@ public class VideoValidatorTest
         notificationValidationHandler.HasErrors().Should().BeFalse();
         notificationValidationHandler.Errors.Should().HaveCount(0);
     }
-    
+
     [Fact(DisplayName = nameof(ReturnsErrorWhenTitleIsTooLong))]
     [Trait("Domain", "Video Validator - Validators")]
     public void ReturnsErrorWhenTitleIsTooLong()
@@ -37,7 +39,8 @@ public class VideoValidatorTest
             _fixture.GetValidYearLaunched(),
             _fixture.GetRandomBoolean(),
             _fixture.GetRandomBoolean(),
-            _fixture.GetValidDuration()
+            _fixture.GetValidDuration(),
+            _fixture.GetRandomRating()
         );
         var notificationValidationHandler = new NotificationValidationHandler();
         var videoValidator = new VideoValidator(invalidVideo, notificationValidationHandler);
@@ -49,7 +52,7 @@ public class VideoValidatorTest
         notificationValidationHandler.Errors.ToList().First()
             .Message.Should().Be("'Title' should be less or equal 255 characters long");
     }
-    
+
     [Fact(DisplayName = nameof(ReturnsErrorWhenTitleIsEmpty))]
     [Trait("Domain", "Video Validator - Validators")]
     public void ReturnsErrorWhenTitleIsEmpty()
@@ -60,7 +63,8 @@ public class VideoValidatorTest
             _fixture.GetValidYearLaunched(),
             _fixture.GetRandomBoolean(),
             _fixture.GetRandomBoolean(),
-            _fixture.GetValidDuration()
+            _fixture.GetValidDuration(),
+            _fixture.GetRandomRating()
         );
         var notificationValidationHandler = new NotificationValidationHandler();
         var videoValidator = new VideoValidator(invalidVideo, notificationValidationHandler);
@@ -83,7 +87,8 @@ public class VideoValidatorTest
             _fixture.GetValidYearLaunched(),
             _fixture.GetRandomBoolean(),
             _fixture.GetRandomBoolean(),
-            _fixture.GetValidDuration()
+            _fixture.GetValidDuration(),
+            _fixture.GetRandomRating()
         );
         var notificationValidationHandler = new NotificationValidationHandler();
         var videoValidator = new VideoValidator(invalidVideo, notificationValidationHandler);
@@ -106,7 +111,8 @@ public class VideoValidatorTest
             _fixture.GetValidYearLaunched(),
             _fixture.GetRandomBoolean(),
             _fixture.GetRandomBoolean(),
-            _fixture.GetValidDuration()
+            _fixture.GetValidDuration(),
+            _fixture.GetRandomRating()
         );
         var notificationValidationHandler = new NotificationValidationHandler();
         var videoValidator = new VideoValidator(invalidVideo, notificationValidationHandler);

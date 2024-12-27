@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FC.Codeflix.Catalog.Domain.SeedWork;
+﻿namespace FC.Codeflix.Catalog.Domain.SeedWork;
 
 public abstract class Entity
 {
