@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
 
 namespace FC.Codeflix.Catalog.EndToEndTests.Api.CastMember.Common;
+
 public class CastMemberPersistence
 {
     private readonly CodeflixCatalogDbContext _context;
