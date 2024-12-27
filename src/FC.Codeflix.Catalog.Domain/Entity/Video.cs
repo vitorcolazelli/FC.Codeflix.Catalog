@@ -1,10 +1,9 @@
-using System.Net.Mime;
 using FC.Codeflix.Catalog.Domain.Enum;
 using FC.Codeflix.Catalog.Domain.Exceptions;
 using FC.Codeflix.Catalog.Domain.SeedWork;
 using FC.Codeflix.Catalog.Domain.Validation;
 using FC.Codeflix.Catalog.Domain.Validator;
-using FC.Codeflix.Catalog.Domain.ValueObjects;
+using FC.Codeflix.Catalog.Domain.ValueObject;
 
 namespace FC.Codeflix.Catalog.Domain.Entity;
 

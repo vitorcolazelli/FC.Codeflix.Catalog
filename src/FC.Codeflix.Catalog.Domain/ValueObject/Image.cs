@@ -1,4 +1,4 @@
-namespace FC.Codeflix.Catalog.Domain.ValueObjects;
+namespace FC.Codeflix.Catalog.Domain.ValueObject;
 
 public class Image : SeedWork.ValueObject
 {
