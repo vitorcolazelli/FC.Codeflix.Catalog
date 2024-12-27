@@ -1,3 +1,5 @@
+using System.Text;
+using FC.Codeflix.Catalog.Application.UseCases.Video.Common;
 using FC.Codeflix.Catalog.Domain.Enum;
 using DomainEntity = FC.Codeflix.Catalog.Domain.Entity;
 
@@ -88,4 +90,21 @@ public abstract class VideoTestFixtureBase : BaseFixture
         var random = new Random();
         return exampleMedias[random.Next(exampleMedias.Length)];
     }
+
+    public FileInput GetValidImageFileInput()
+    {
+        var exampleStream = new MemoryStream(Encoding.ASCII.GetBytes("test"));
+        var fileInput = new FileInput("jpg", exampleStream, "image/jpeg");
+        return fileInput;
+    }
+
+    public FileInput GetValidMediaFileInput()
+    {
+        var exampleStream = new MemoryStream(Encoding.ASCII.GetBytes("test"));
+        var fileInput = new FileInput("mp4", exampleStream, "video/mp4");
+        return fileInput;
+    }
+
+    public DomainEntity.Media GetValidMedia()
+        => new(GetValidMediaPath());
 }
